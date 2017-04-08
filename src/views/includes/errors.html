@@ -1,0 +1,18 @@
+<!-- htmlmin:ignore -->
+{% if errorMessages.length %}
+    <div class="alert alert-danger alert-dismissable fade in show" role="alert">
+        {% for error in errorMessages %}{{ error.msg or error }}{% if loop.index < errorMessages.length %}, {% endif %}{% endfor %}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+{% endif %}
+
+{% if successMessages.length %}
+<div class="alert alert-success alert-dismissable fade in show" role="alert">
+        {% for message in successMessages %}{{ message }}{% if loop.index < successMessages.length %}, {% endif %}{% endfor %}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <i class="fa fa-times"></i>
+        </button>    </div>
+{% endif %}
+<!-- htmlmin:ignore -->
