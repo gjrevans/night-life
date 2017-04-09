@@ -12,3 +12,81 @@
         line-height: 1.5rem;
     }
 }
+
+// Breadcrump
+.breadcrumb {
+    border-radius: 0;
+}
+
+// Jumbotron
+.jumbotron-wrapper {
+    position: relative;
+}
+
+.jumbotron-overlay {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 200px;
+    background: -webkit-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,1)); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,1)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,1)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,1)); /* Standard syntax */
+}
+
+.jumbotron {
+    color: white;
+    overflow: hidden;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    background: url('http://www.grandhoteldupalaisroyal.com/images/slide/bar-11.jpg');
+}
+
+// Cards
+.card {
+    &.card-inverse {
+        background: $gray-dark;
+    }
+}
+
+// Images
+.image-fit {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.center-cropped {
+    position: relative;
+    overflow: hidden;
+    img {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        height: 100%;
+        width: auto;
+        -webkit-transform: translate(-50%,-50%);
+            -ms-transform: translate(-50%,-50%);
+                transform: translate(-50%,-50%);
+    }
+    img.portrait {
+        width: 100%;
+        height: auto;
+    }
+}
+
+.image-xs {
+    width: $image-xs;
+    height: $image-xs;
+}
+
+.image-sm {
+    width: $image-sm;
+    height: $image-sm;
+}
+
+.image-md {
+    width: $image-md;
+    height: $image-md;
+}

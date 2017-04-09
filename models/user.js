@@ -21,6 +21,9 @@ var UserSchema = mongoose.Schema({
     name: {
         type: String
     }
+    locations: [{
+        type: String
+    }]
 });
 
 UserModel.prototype.createUser = function(newUser, callback){

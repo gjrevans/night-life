@@ -52,7 +52,7 @@ app.use(breadcrumbs.setHome());
 
 // Mount the breadcrumbs at `/admin`
 app.use('/', breadcrumbs.setHome({
-  name: 'Home',
+  name: 'Locations',
   url: '/'
 }));
 
@@ -61,7 +61,7 @@ app.use(session({
     secret: 'secret',
     maxAge: new Date(Date.now() + 3600000),
     store: new MongoStore({
-        mongooseConnection:mongoose.connection
+        mongooseConnection: mongoose.connection
     }),
     saveUninitialized: true,
     resave: true
@@ -130,15 +130,17 @@ function alreadyAuthenticated(req, res, next){
 models = new Models();
 routes = new Routes(models);
 
-/* -- Page Routes -- */
-app.get('/', routes.pages.index);
-
 /* -- User Routes -- */
 app.get('/users/register', alreadyAuthenticated, routes.users.register);
 app.post('/users/register', routes.users.createAccount);
 app.get('/users/login', alreadyAuthenticated, routes.users.login);
 app.post('/users/login', passport.authenticate('local', {successRedirect:'/', failureRedirect:'/users/login', failureFlash: {type: 'errorMessages'}}), routes.users.authenticate);
 app.get('/users/logout', routes.users.logout);
+
+/* -- Location Routes -- */
+app.get('/', routes.locations.index);
+app.get('/locations/search', routes.locations.search);
+
 
 // Catch 404 and forward to error handler
 app.use(function(req, res, next) {

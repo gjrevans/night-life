@@ -7,10 +7,11 @@ var gulp         = require('gulp'),
 	del          = require('del'),
 	gutil        = require('gulp-util'),
     concat       = require('gulp-concat'),
+	concatCss 	 = require('gulp-concat-css'),
 	plumber      = require('gulp-plumber'),
 	imagemin     = require('gulp-imagemin'),
 	minifyCSS    = require('gulp-minify-css'),
-	htmlmin 	= require('gulp-htmlmin'),
+	htmlmin 	 = require('gulp-htmlmin'),
 	rev          = require('gulp-rev'),
     jshint       = require('gulp-jshint'),
     imagemin     = require('gulp-imagemin'),
@@ -20,15 +21,21 @@ var gulp         = require('gulp'),
 
 
 var paths = {
-	fontsSrc: 'src/fonts/',
-    htmlSrc:  'src/views/',
-    sassSrc:  'src/sass/',
-    jsSrc:    'src/js/',
-    imgSrc:   'src/images/',
+	fontsSrc: 	'src/fonts/',
+    htmlSrc:  	'src/views/',
 
-    buildDir: 'build/',
-    revDir:   'build/rev/',
-    distDir:  'dist/'
+    sassSrc:  	'src/sass/',
+	sassBs:		'node_modules/bootstrap/scss/',
+
+    jsSrc:    	'src/js/',
+	jsBs:		'node_modules/bootstrap/dist/js/',
+
+    imgSrc:   	'src/images/',
+
+	tempDir:	'build/temp/',
+    buildDir: 	'build/',
+    revDir:   	'build/rev/',
+    distDir:  	'dist/'
 };
 
 var onError = function (err) {
@@ -86,8 +93,20 @@ gulp.task('dist-html', ['build-html', 'dist-js', 'dist-css', 'dist-images'], fun
 */
 gulp.task('build-css', ['sass']);
 
-gulp.task('sass', function () {
-    return gulp.src(paths.sassSrc + '**/*.scss')
+gulp.task('pre-sass', function(done) {
+	// Order of import matters bs must come first
+	return gulp.src([
+			paths.sassBs + '**/*.scss',
+			paths.sassSrc + '**/*.scss'
+		])
+		.pipe(gulp.dest(paths.tempDir + 'sass/'))
+		.pipe(livereload())
+
+	done();
+});
+
+gulp.task('sass', ['pre-sass'], function () {
+    return gulp.src(paths.tempDir + 'sass/main.scss')
         .pipe(sass({
             includePaths: require('node-neat').includePaths,
             style: 'nested',
@@ -95,6 +114,7 @@ gulp.task('sass', function () {
             	console.log("Error in scss");
             }
         }))
+		.pipe(concatCss('main.css'))
         .pipe(plumber({ errorHandler: onError }))
         .pipe(gulp.dest(paths.buildDir + 'css/'))
         .pipe(livereload());
@@ -129,6 +149,17 @@ JS Tasks
 */
 gulp.task('build-js', ['js', 'js-plugins']);
 
+gulp.task('js-plugins', [], function() {
+    return gulp.src([
+			'node_modules/bootstrap/dist/js/bootstrap.min.js',
+            'src/lib/*.js'
+        ])
+        .pipe(concat('vendor.js'))
+        .pipe(gulp.dest(paths.buildDir + 'js/'))
+        .pipe(livereload());
+});
+
+
 gulp.task('js', function() {
     return gulp.src(paths.jsSrc + '*.js')
         .pipe(plumber({ errorHandler: onError }))
@@ -136,15 +167,6 @@ gulp.task('js', function() {
         .pipe(jshint())
         .pipe(jshint.reporter('default'))
         .pipe(gulp.dest(paths.buildDir + 'js'))
-        .pipe(livereload());
-});
-
-gulp.task('js-plugins', [], function() {
-    return gulp.src([
-            'src/lib/*.js'
-        ])
-        .pipe(concat('vendor.js'))
-        .pipe(gulp.dest(paths.buildDir + 'js/'))
         .pipe(livereload());
 });
 
@@ -194,7 +216,7 @@ gulp.task('dist-favicon', ['build-favicon'], function() {
 
 gulp.task('watch', function () {
 	gulp.watch(['src/views/**/*.html'], ['build-html']);
-    gulp.watch('src/sass/**', ['sass']);
+    gulp.watch('src/sass/**/*.scss', ['pre-sass', 'sass']);
     gulp.watch(paths.jsSrc + '**/*.js', ['js']);
     gulp.watch('src/lib/**' + '**/*.js', ['js-plugins']);
     gulp.watch(paths.imgSrc + '**/*.+(png|jpeg|jpg|gif|svg)', ['build-images']);
