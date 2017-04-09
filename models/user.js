@@ -20,7 +20,7 @@ var UserSchema = mongoose.Schema({
     },
     name: {
         type: String
-    }
+    },
     locations: [{
         type: String
     }]
