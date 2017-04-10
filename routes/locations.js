@@ -7,9 +7,9 @@ var LocationRoutes = function(appModels){
 LocationRoutes.prototype.index = function(req, res) {
     // If the user has searched for something previously, then lets use that for our search
     if(req.session.lastSearchedLocation){
-        return res.redirect('locations/search?limit=10&offset=0&q=' + req.session.lastSearchedLocation);
+        return res.redirect('locations?limit=10&offset=0&q=' + req.session.lastSearchedLocation);
     }
-    res.redirect('locations/search');
+    res.redirect('/locations');
 
 }
 

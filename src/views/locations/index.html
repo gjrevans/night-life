@@ -76,10 +76,10 @@
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
                     <li class="page-item {% if options.offset == 0 %}disabled{% endif %}">
-                        <a class="page-link" href="/locations/search?q={{ options.location }}&limit={{ options.limit }}&offset={{ options.offset - options.limit }}">Previous</a>
+                        <a class="page-link" href="/locations?q={{ options.location }}&limit={{ options.limit }}&offset={{ options.offset - options.limit }}">Previous</a>
                     </li>
                     <li class="page-item {% if options.offset + options.limit > total %} disabled {% endif %}">
-                        <a class="page-link" href="/locations/search?q={{ options.location }}&limit={{ options.limit }}&offset={{ options.offset + options.limit }}">Next</a>
+                        <a class="page-link" href="/locations?q={{ options.location }}&limit={{ options.limit }}&offset={{ options.offset + options.limit }}">Next</a>
                     </li>
                 </ul>
             </nav>
@@ -95,7 +95,7 @@ $('#search').click(function(){
     var query = $('input').val();
     if(query) {
         $(this).html('<i class="fa fa-spinner fa-spin"></i>');
-        return location.href = '/locations/search?q=' + encodeURIComponent(query) + '&limit=10&offset=0';
+        return location.href = '/locations?q=' + encodeURIComponent(query) + '&limit=10&offset=0';
     }
     $('input[name=term]').addClass('animated shake').parent().addClass('has-danger');
 

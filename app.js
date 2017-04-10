@@ -141,7 +141,7 @@ app.get('/users/logout', routes.users.logout);
 
 /* -- Location Routes -- */
 app.get('/', routes.locations.index);
-app.get('/locations/search', routes.locations.search);
+app.get('/locations', routes.locations.search);
 
 
 // Catch 404 and forward to error handler
