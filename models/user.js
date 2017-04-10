@@ -55,4 +55,38 @@ UserModel.prototype.comparePassword = function(candidatePassword, hash, callback
     });
 }
 
+UserModel.prototype.addGoing = function(id, location, callback){
+    // Make sure we're passing a mongo id
+    if(!id || !validator.isMongoId(id)){
+        return callback("InvalidUserId", false);
+    }
+
+    var update = {
+        $push: {
+            locations: location
+        }
+    };
+
+    var query = {'_id': id};
+
+    User.findOneAndUpdate(query, update, callback);
+}
+
+UserModel.prototype.removeGoing = function(id, location, callback){
+    // Make sure we're passing a mongo id
+    if(!id || !validator.isMongoId(id)){
+        return callback("InvalidUserId", false);
+    }
+
+    var update = {
+        $pullAll: {
+            locations: [location]
+        }
+    };
+
+    var query = {'_id': id};
+
+    User.findOneAndUpdate(query, update, callback);
+}
+
 module.exports = UserModel;

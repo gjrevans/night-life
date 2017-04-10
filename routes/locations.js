@@ -5,7 +5,12 @@ var LocationRoutes = function(appModels){
 };
 
 LocationRoutes.prototype.index = function(req, res) {
+    // If the user has searched for something previously, then lets use that for our search
+    if(req.session.lastSearchedLocation){
+        return res.redirect('locations/search?limit=10&offset=0&q=' + req.session.lastSearchedLocation);
+    }
     res.redirect('locations/search');
+
 }
 
 LocationRoutes.prototype.search = function(req, res) {
@@ -23,6 +28,10 @@ LocationRoutes.prototype.search = function(req, res) {
     var total = 0;
 
     if(options.location) {
+        // Set the users last location
+        req.session.lastSearchedLocation = options.location;
+
+        // Get a token if no token
         if(!req.session.token){
             models.location.getToken(function(err, token){
                 if(err) throw err;
@@ -30,7 +39,6 @@ LocationRoutes.prototype.search = function(req, res) {
                 // Get the locations and set the session token for future requests
                 requestForLocations(token);
                 req.session.token = token;
-                console.log('Had to get a new token!');
             });
         } else {
             requestForLocations(req.session.token);
@@ -41,12 +49,35 @@ LocationRoutes.prototype.search = function(req, res) {
             models.location.locationSearch(options, token, function(err, foundLocations){
                 if(err) throw err;
 
+                // Create variables that will be passed to the view
                 total = foundLocations.total;
-                render(foundLocations.businesses);
+                locations = foundLocations.businesses;
+
+                // Map user locations to the requested locations
+                // Allow us to show if the user is going to a certain location
+                if(req.user){
+                    locations.forEach(function(location, index) {
+                        locations[index].isGoing = false;
+
+                        if (checkIfGoing(location.id)) {
+                            locations[index].isGoing = true;
+                        }
+                    });
+                }
+                render(locations);
             });
         }
     } else {
         render(locations);
+    }
+
+    function checkIfGoing(id){
+        var userLocations = req.user.locations;
+        for(var i = 0; i < userLocations.length; i++) {
+            if (id === userLocations[i]) {
+                return true;
+            }
+        }
     }
 
     // Render locations to the view

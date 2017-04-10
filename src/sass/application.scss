@@ -90,3 +90,8 @@
     width: $image-md;
     height: $image-md;
 }
+
+// Locations
+.is-going {
+    @extend .btn-success;
+}

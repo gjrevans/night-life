@@ -134,6 +134,8 @@ routes = new Routes(models);
 app.get('/users/register', alreadyAuthenticated, routes.users.register);
 app.post('/users/register', routes.users.createAccount);
 app.get('/users/login', alreadyAuthenticated, routes.users.login);
+app.patch('/users/:id', ensureAuthented, routes.users.addGoing);
+app.delete('/users/:id', ensureAuthented, routes.users.removeGoing);
 app.post('/users/login', passport.authenticate('local', {successRedirect:'/', failureRedirect:'/users/login', failureFlash: {type: 'errorMessages'}}), routes.users.authenticate);
 app.get('/users/logout', routes.users.logout);
 

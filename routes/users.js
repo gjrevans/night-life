@@ -76,7 +76,52 @@ UserRoutes.prototype.authenticate = function(req, res) {
 UserRoutes.prototype.logout = function(req, res) {
     req.logout();
     req.flash('successMessages', 'Successfully logged out!');
-    res.redirect('/users/login');
+    req.session.destroy();
+    res.redirect('/');
+}
+
+UserRoutes.prototype.addGoing = function(req, res) {
+    var location = req.body.locationId;
+    var user = req.params.id;
+    console.log('Hi there');
+    console.log(location);
+    console.log(user);
+    if (location && user) {
+        models.user.addGoing(user, location, function(err, user){
+            if (err){
+                return res.status(500).json({status: 500, error: true, message: err});
+            }
+            res.status(200).json({
+                status: 200,
+                error: false,
+                message: "Success",
+                model: 'user'
+            });
+        });
+    } else {
+        return res.status(404).json({status: 404, error: true, message: 'Bad Request'});
+    }
+}
+
+UserRoutes.prototype.removeGoing = function(req, res) {
+    var location = req.body.locationId;
+    var user = req.params.id;
+
+    if (location && user) {
+        models.user.removeGoing(user, location, function(err, user){
+            if (err){
+                return res.status(500).json({status: 500, error: true, message: err});
+            }
+            res.status(200).json({
+                status: 200,
+                error: false,
+                message: "Success",
+                model: 'user'
+            });
+        });
+    } else {
+        return res.status(404).json({status: 404, error: true, message: 'Bad Request'});
+    }
 }
 
 passport.use(new LocalStrategy(function(username, password, done) {
