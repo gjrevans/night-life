@@ -83,9 +83,7 @@ UserRoutes.prototype.logout = function(req, res) {
 UserRoutes.prototype.addGoing = function(req, res) {
     var location = req.body.locationId;
     var user = req.params.id;
-    console.log('Hi there');
-    console.log(location);
-    console.log(user);
+    
     if (location && user) {
         models.user.addGoing(user, location, function(err, user){
             if (err){

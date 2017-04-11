@@ -55,14 +55,8 @@ LocationRoutes.prototype.search = function(req, res) {
 
                 // Map user locations to the requested locations
                 // Allow us to show if the user is going to a certain location
-                if(req.user){
-                    locations.forEach(function(location, index) {
-                        locations[index].isGoing = false;
-
-                        if (checkIfGoing(location.id)) {
-                            locations[index].isGoing = true;
-                        }
-                    });
+                if(req.user && req.user.locations){
+                    locations.forEach(setIsGoing);
                 }
                 render(locations);
             });
@@ -71,13 +65,8 @@ LocationRoutes.prototype.search = function(req, res) {
         render(locations);
     }
 
-    function checkIfGoing(id){
-        var userLocations = req.user.locations;
-        for(var i = 0; i < userLocations.length; i++) {
-            if (id === userLocations[i]) {
-                return true;
-            }
-        }
+    function setIsGoing(location){
+        location.isGoing = req.user.locations.indexOf(location.id) !== -1;
     }
 
     // Render locations to the view
